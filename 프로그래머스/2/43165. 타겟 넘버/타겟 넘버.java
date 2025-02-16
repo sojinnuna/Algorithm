@@ -4,21 +4,19 @@ class Solution {
     int answer;
     public int solution(int[] numbers, int target) {
         answer = 0;
-        dfs(numbers, target, 0, 0);
+        dfs(0, 0, numbers, target);
         return answer;
     }
     
-    private void dfs(int[] numbers, int target, int cur, int count){
-        //예외 처리
+    private void dfs(int a, int count, int[] numbers, int target){
         if(count >= numbers.length){
-            if(cur == target){
+            if(a == target){
                 answer++;
             }
-            return;
+           return;
         }
         
-        dfs(numbers, target, cur+numbers[count], count+1);
-        dfs(numbers, target, cur-numbers[count], count+1);
-        
+        dfs(a+numbers[count], count+1, numbers, target);
+        dfs(a-numbers[count], count+1, numbers, target);
     }
 }
