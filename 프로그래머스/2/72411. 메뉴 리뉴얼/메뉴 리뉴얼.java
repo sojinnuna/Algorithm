@@ -1,50 +1,50 @@
 import java.util.*;
 
 class Solution {
+    ArrayList<String> list = new ArrayList<>();
     HashMap<String, Integer> map = new HashMap<>();
     
     public String[] solution(String[] orders, int[] course) {
-        for(int i=0; i<orders.length; i++){
-            char[] arr = orders[i].toCharArray();
-            Arrays.sort(arr);
-            orders[i] = new String(arr);
+        //문자열 알파벳 순서대로
+        for(int i=0; i<orders.length; i++) {
+            char[] c = orders[i].toCharArray();
+            Arrays.sort(c);
+            orders[i] = new String(c);
         }
         
-        ArrayList<String> list = new ArrayList<>();
-        for(int c : course){
+        for(int c : course) {
             map.clear();
-            
-            for(String o : orders){
+            for(String o : orders) {
                 if(o.length() >= c){
-                    dfs(c, o, "", 0);
+                    dfs(o, c, "", 0);
                 }
             }
-            
             int max = 2;
-            for(int m : map.values()){
-                if(m > max){
-                    max = m;
-                }
+            for(int cur : map.values()) {
+                max = Math.max(cur, max);
             }
             
-            for(String s : map.keySet()){
-                if(map.get(s)==max){
-                    list.add(s);
+            for(String cur : map.keySet()) {
+                if(map.get(cur) == max){
+                    list.add(cur);
                 }
             }
         }
         Collections.sort(list);
         return list.toArray(new String[0]);
+        
     }
     
-    private void dfs(int c, String o, String a, int b){
-        if(a.length() == c){
-            map.put(a, map.getOrDefault(a, 0)+1);
+    private void dfs(String o, int c, String cur, int len) {
+        //예외 처리
+        if(cur.length() == c) {
+            map.put(cur, map.getOrDefault(cur, 0) + 1);
             return;
         }
         
-        for(int i=b; i<o.length(); i++){
-            dfs(c, o, a+o.charAt(i), i+1);
+        //dfs
+        for(int i=len; i<o.length(); i++) {
+            dfs(o, c, cur+o.charAt(i), i+1);
         }
     }
 }
