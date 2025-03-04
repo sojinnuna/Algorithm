@@ -11,13 +11,12 @@ class Solution {
     }
     
     private void dfs(String begin, String target, String[] words, int count) {
-        //만약 같으면 리턴
+
         if(begin.equals(target)) {
             answer = count;
             return;
         }
 
-        //for문
         for(int i=0; i<words.length; i++) {
             if(!visited[i]) {
                 int k = 0;
