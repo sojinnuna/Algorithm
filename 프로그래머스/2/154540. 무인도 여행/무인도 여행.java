@@ -1,71 +1,57 @@
 import java.util.*;
 
 class Solution {
-    ArrayList<Integer> list;
-    String[][] map;
+    ArrayList<Integer> answer = new ArrayList<>();
+    char[][] box;
+    boolean[][] visited;
     int[] dx = {-1, 1, 0, 0};
     int[] dy = {0, 0, -1, 1};
-    boolean[][] visited;
-    int total = 0;
-    
+    int cur = 0;
+
     public int[] solution(String[] maps) {
-        list= new ArrayList<>();
-        map = new String[maps.length][maps[0].length()];
+        box = new char[maps.length][maps[0].length()];
         visited = new boolean[maps.length][maps[0].length()];
-        
-        for(int i=0; i<maps.length; i++){
-            for(int j=0; j<maps[0].length(); j++){
-                map[i][j] = maps[i].substring(j, j+1);
+
+        for (int i = 0; i < maps.length; i++) {
+            String s = maps[i];
+            for (int j = 0; j < s.length(); j++) {
+                box[i][j] = s.charAt(j);
             }
         }
-        
-        for(int i=0; i<maps.length; i++){
-            for(int j=0; j<maps[0].length(); j++){
-                if(!visited[i][j] && !map[i][j].equals("X")){
-                    total = 0;
-                    list.add(bfs(i, j));
+
+        for (int i = 0; i < maps.length; i++) {
+            for (int j = 0; j < maps[0].length(); j++) {
+                if (box[i][j] != 'X' && !visited[i][j]) {
+                    cur = 0;  // 새 영역 시작 시 초기화
+                    dfs(i, j);
+                    answer.add(cur);
                 }
             }
         }
-        
-        Collections.sort(list);
-        int[] answer;
-        if(list.size()==0){
-            answer = new int[1];
-            answer[0] = -1;
-        }else{
-            answer = new int[list.size()];
-            for(int i=0; i<list.size(); i++){
-                answer[i] = list.get(i);
-            }
+
+        if (answer.isEmpty()) return new int[]{-1};
+
+        Collections.sort(answer);
+        int[] a = new int[answer.size()];
+        for (int i = 0; i < answer.size(); i++) {
+            a[i] = answer.get(i);
         }
-        return answer;
+
+        return a;
     }
-    
-     private int bfs(int a, int b) { 
-        Queue<int[]> q = new ArrayDeque<>();
-        q.add(new int[]{a, b});
+
+    private void dfs(int a, int b) {
         visited[a][b] = true;
-        int sum = 0;
+        cur += box[a][b] - '0';
 
-        while (!q.isEmpty()) {
-            int[] cur = q.poll();
-            int x = cur[0];
-            int y = cur[1];
-            sum += Integer.parseInt(map[x][y]);
-
-            for (int i = 0; i < 4; i++) {
-                int nx = x + dx[i];
-                int ny = y + dy[i];
-
-                if (nx >= 0 && nx < map.length && ny >= 0 && ny < map[0].length) {
-                    if (!visited[nx][ny] && !map[nx][ny].equals("X")) {
-                        visited[nx][ny] = true;
-                        q.add(new int[]{nx, ny});
-                    }
+        for (int i = 0; i < 4; i++) {
+            int na = a + dx[i];
+            int nb = b + dy[i];
+            if (na >= 0 && na < box.length && nb >= 0 && nb < box[0].length) {
+                if (!visited[na][nb] && box[na][nb] != 'X') {
+                    dfs(na, nb);
                 }
             }
         }
-        return sum;
     }
 }
