@@ -1,47 +1,56 @@
 import java.util.*;
 
 class Solution {
+    ArrayList<int[]>[] graph;
+    int[] visited;
+    
     public int solution(int N, int[][] road, int K) {
-        ArrayList<int[]>[] graph = new ArrayList[N+1];
+        graph = new ArrayList[N+1];
+        visited = new int[N+1];
+        int answer = 0;
+        Arrays.fill(visited, Integer.MAX_VALUE);
+        
         for(int i=1; i<=N; i++) {
             graph[i] = new ArrayList<>();
         }
+        
         for(int i=0; i<road.length; i++) {
-            int start = road[i][0];
-            int end = road[i][1];
-            int len = road[i][2];
+            int a = road[i][0];
+            int b = road[i][1];
+            int c = road[i][2];
             
-            graph[start].add(new int[]{end, len});
-            graph[end].add(new int[]{start, len});
+            graph[a].add(new int[]{b, c});
+            graph[b].add(new int[]{a, c});
         }
-        int[] len = new int[N+1];
-        Arrays.fill(len, Integer.MAX_VALUE);
-        len[1] = 0;
+        
+        visited[1] = 0;
         Queue<Integer> q = new LinkedList<>();
-        for(int[] i : graph[1]) {
-            int a = i[0];
-            int b = i[1];
-            len[a] = Math.min(len[a], b);
+        for(int[] g : graph[1]) {
+            int a = g[0];
+            int b = g[1];
+            visited[a] = Math.min(visited[a], b);
             q.add(a);
         }
         
         while(!q.isEmpty()) {
             int cur = q.poll();
-            for(int[] i : graph[cur]) {
-                int a = i[0];
-                int b = i[1];
-                if(len[a] > len[cur]+b) {
-                    len[a] = len[cur]+b;
+            for(int[] c : graph[cur]) {
+                int a = c[0];
+                int b = c[1];
+                
+                if(visited[a] > visited[cur]+b) {
+                    visited[a] = visited[cur]+b;
                     q.add(a);
                 }
             }
         }
-        int answer = 0;
-        for(int i=0; i<len.length; i++) {
-            if(len[i] <= K) {
+        
+        for(int i=0; i<visited.length; i++) {
+            if(visited[i] <= K) {
                 answer++;
             }
         }
+        
         return answer;
     }
 }
